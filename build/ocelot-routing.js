@@ -34130,11 +34130,68 @@ exports["default"] = _react2["default"].createClass({
     displayName: "Bigbox",
 
     componentWillReceiveProps: function componentWillReceiveProps(bigboxProps) {
-        console.log(bigboxProps);
+        this.vastObj = bigboxProps;
+        console.log(this.vastObj);
+    },
+
+    generateImage: function generateImage() {
+        return _react2["default"].createElement(
+            "a",
+            { href: this.vastObj.data.companionBigbox.clickthrough, target: "_blank" },
+            _react2["default"].createElement("img", { src: this.vastObj.data.companionBigbox.staticResource, width: "300", height: "250" })
+        );
+    },
+
+    generateFlash: function generateFlash() {
+
+        var flashFile = this.vastObj.data.companionBigbox.staticResource;
+        var flashClickThrough = encodeURIComponent(this.vastObj.data.companionBigbox.clickthrough);
+
+        return _react2["default"].createElement(
+            "object",
+            { classID: "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000", id: "vastCompanionAd", width: "300", height: "250" },
+            _react2["default"].createElement("embed", { src: flashFile, quality: "high", pluginspage: "http://www.macromedia.com/go/getfashplayer", type: "application/x-shockwave-flash", width: "300", height: "250" })
+        );
+    },
+
+    generateStatic: function generateStatic() {
+        if (this.vastObj.data.companionBigbox.staticType.indexOf("image") !== -1) {
+            var imageBigbox = this.generateImage();
+            return imageBigbox;
+        } else if (this.vastObj.data.companionBigbox.staticType.indexOf("flash") !== -1) {
+            var flashBigbox = this.generateFlash();
+            return flashBigbox;
+        }
+    },
+
+    generateHTML: function generateHTML() {
+        return _react2["default"].createElement(
+            "h1",
+            null,
+            "HTML"
+        );
+    },
+
+    getBigbox: function getBigbox() {
+        if (typeof this.vastObj == "undefined") {
+            return;
+        } else {
+            if (this.vastObj.data.companionBigbox.resourceType === "static") {
+                var staticBigbox = this.generateStatic();
+                return staticBigbox;
+            } else if (this.vastObj.data.companionBigbox.resourceType === "html") {
+                var htmlBigbox = this.generateHTML();
+                return htmlBigbox;
+            }
+        }
     },
 
     render: function render() {
-        return _react2["default"].createElement("img", { src: "https://upload.wikimedia.org/wikipedia/commons/2/24/Ad-MediumRectangle-300x250.jpg", width: "300", height: "250" });
+        return _react2["default"].createElement(
+            "div",
+            null,
+            this.getBigbox()
+        );
     }
 
 });
@@ -34195,6 +34252,7 @@ exports['default'] = _react2['default'].createClass({
         var vastObj = _storesVastStoreJsx2['default'].getVastObject();
         this.videoFiles = _utilsVastVastPlayerJsx2['default'].getMediaFiles(vastObj);
         this.companionAd = _utilsVastVastPlayerJsx2['default'].getCompanionAd(vastObj);
+        console.log(this.companionAd);
         this.setState({
             vast: {
                 videoURL: this.videoFiles[0],

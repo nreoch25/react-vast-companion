@@ -25,6 +25,7 @@ export default React.createClass({
         var vastObj = VastStore.getVastObject();
         this.videoFiles = VastPlayer.getMediaFiles(vastObj);
         this.companionAd = VastPlayer.getCompanionAd(vastObj);
+        console.log(this.companionAd);
         this.setState({
             vast : {
                 videoURL : this.videoFiles[0],
