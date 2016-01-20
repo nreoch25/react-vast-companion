@@ -16,6 +16,14 @@ export default React.createClass({
         );
     },
 
+    getDefaultCompanion() {
+        return (
+            <a href="http://www.cbc.ca/beta/arts" target="_blank">
+                <img src="http://ca.mysavings.com/img/link/large/14341.jpg" width="300" height="250" />
+            </a>
+        );
+    },
+
     bigboxStyles : {
         width: '300px',
         height: '250px',
@@ -57,6 +65,9 @@ export default React.createClass({
                 return staticBigbox;
             } else if(this.vastObj.data.companionBigbox.resourceType === "html") {
                 return <HTMLResource html={this.vastObj.data.companionBigbox.htmlResource} />
+            } else if(this.vastObj.data.companionBigbox === "setDefault") {
+                var defaultBigbox = this.getDefaultCompanion();
+                return defaultBigbox;
             }
             
         }

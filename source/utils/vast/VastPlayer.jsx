@@ -26,7 +26,7 @@ module.exports = {
             var companionObj = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[1].CompanionAds[0].Companion[0]; 
         } else {
             console.log("no companion");
-            return false;
+            return "setDefault";
         }
         console.log(companionObj);
         //check for static resource

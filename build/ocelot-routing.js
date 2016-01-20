@@ -34146,6 +34146,14 @@ exports['default'] = _react2['default'].createClass({
         );
     },
 
+    getDefaultCompanion: function getDefaultCompanion() {
+        return _react2['default'].createElement(
+            'a',
+            { href: 'http://www.cbc.ca/beta/arts', target: '_blank' },
+            _react2['default'].createElement('img', { src: 'http://ca.mysavings.com/img/link/large/14341.jpg', width: '300', height: '250' })
+        );
+    },
+
     bigboxStyles: {
         width: '300px',
         height: '250px',
@@ -34187,6 +34195,9 @@ exports['default'] = _react2['default'].createClass({
                 return staticBigbox;
             } else if (this.vastObj.data.companionBigbox.resourceType === "html") {
                 return _react2['default'].createElement(_HTMLResourceJsx2['default'], { html: this.vastObj.data.companionBigbox.htmlResource });
+            } else if (this.vastObj.data.companionBigbox === "setDefault") {
+                var defaultBigbox = this.getDefaultCompanion();
+                return defaultBigbox;
             }
         }
     },
@@ -34669,7 +34680,7 @@ module.exports = {
             var companionObj = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[1].CompanionAds[0].Companion[0];
         } else {
             console.log("no companion");
-            return false;
+            return "setDefault";
         }
         console.log(companionObj);
         //check for static resource
