@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import HTMLResource from './HTMLResource.jsx';
 
 export default React.createClass({
 
@@ -15,6 +16,16 @@ export default React.createClass({
         );
     },
 
+    bigboxStyles : {
+        width: '300px',
+        height: '250px',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        zIndex: '100000',
+        display: 'none'
+    },
+
     generateFlash() {
 
         var flashFile = this.vastObj.data.companionBigbox.staticResource;
@@ -22,7 +33,7 @@ export default React.createClass({
         
         return (
             <object classID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="vastCompanionAd" width="300" height="250">
-                <embed src={flashFile} quality="high" pluginspage="http://www.macromedia.com/go/getfashplayer" type="application/x-shockwave-flash" width="300" height="250" />
+                <embed src={flashFile} quality="high" type="application/x-shockwave-flash" width="300" height="250" />
             </object>
         );
     },
@@ -37,10 +48,6 @@ export default React.createClass({
         }
     },
 
-    generateHTML() {
-        return <h1>HTML</h1>
-    },
-
     getBigbox() {
         if(typeof this.vastObj == "undefined") {
             return;
@@ -49,8 +56,7 @@ export default React.createClass({
                 var staticBigbox = this.generateStatic();
                 return staticBigbox;
             } else if(this.vastObj.data.companionBigbox.resourceType === "html") {
-                var htmlBigbox = this.generateHTML();
-                return htmlBigbox;
+                return <HTMLResource html={this.vastObj.data.companionBigbox.htmlResource} />
             }
             
         }
@@ -59,7 +65,7 @@ export default React.createClass({
 
     render() {
         return (
-            <div>
+            <div id="companion-bigbox" style={this.bigboxStyles} >
                 { this.getBigbox() }
             </div>
         );

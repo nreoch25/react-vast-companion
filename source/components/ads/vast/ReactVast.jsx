@@ -19,6 +19,13 @@ export default React.createClass({
         }
     },
 
+    containerStyles : {
+        width: '302px',
+        height: '252px',
+        border: '1px solid #000',
+        position: 'relative'
+    },
+
     onVastReceived() {
         console.log("Vast Received");
         VastStore.removeLoadListener(this.onVastReceived);
@@ -43,18 +50,11 @@ export default React.createClass({
 
         return(
             
-            <div className="grid grid_gutters grid-med_full">
-                <div className="grid-cell module_grid">
-                    <div className="card">
-                        <span className="card-title">React Vast Video Player</span>
-                        <div className="card-feature">
-                            <VideoPlayer data={this.state.vast} />
-                            <Bigbox data={this.state.vast} />
-                        </div>
-                        <div className="card-meta">
-                            <div className="card-tag">Advertisement</div>
-                        </div>
-                    </div>
+            <div>
+                <h6>React Vast Video Player</h6>
+                <div style={this.containerStyles}>
+                    <VideoPlayer data={this.state.vast} />
+                    <Bigbox data={this.state.vast} />
                 </div>
             </div>
         );

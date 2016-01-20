@@ -33964,7 +33964,7 @@ module.exports = _react2['default'].createElement(
     _react2['default'].createElement(_reactRouter.NotFoundRoute, { handler: _componentsExtraNotFoundJsx2['default'] })
 );
 
-},{"./components/AppContainer.jsx":308,"./components/ads/vast/ReactVast.jsx":310,"./components/extra/Index.jsx":312,"./components/extra/NotFound.jsx":313,"react":224,"react-router":56}],306:[function(require,module,exports){
+},{"./components/AppContainer.jsx":308,"./components/ads/vast/ReactVast.jsx":311,"./components/extra/Index.jsx":313,"./components/extra/NotFound.jsx":314,"react":224,"react-router":56}],306:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -34030,7 +34030,7 @@ module.exports = {
 
 };
 
-},{"../constants/AppConstants.jsx":316,"../dispatcher/AppDispatcher.jsx":317,"../utils/WebApi.jsx":319,"xml2js":227}],307:[function(require,module,exports){
+},{"../constants/AppConstants.jsx":317,"../dispatcher/AppDispatcher.jsx":318,"../utils/WebApi.jsx":320,"xml2js":227}],307:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -34113,21 +34113,25 @@ exports['default'] = _react2['default'].createClass({
 });
 module.exports = exports['default'];
 
-},{"./global/Header.jsx":314,"./global/Nav.jsx":315,"react":224,"react-router":56}],309:[function(require,module,exports){
-"use strict";
+},{"./global/Header.jsx":315,"./global/Nav.jsx":316,"react":224,"react-router":56}],309:[function(require,module,exports){
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-exports["default"] = _react2["default"].createClass({
-    displayName: "Bigbox",
+var _HTMLResourceJsx = require('./HTMLResource.jsx');
+
+var _HTMLResourceJsx2 = _interopRequireDefault(_HTMLResourceJsx);
+
+exports['default'] = _react2['default'].createClass({
+    displayName: 'Bigbox',
 
     componentWillReceiveProps: function componentWillReceiveProps(bigboxProps) {
         this.vastObj = bigboxProps;
@@ -34135,11 +34139,21 @@ exports["default"] = _react2["default"].createClass({
     },
 
     generateImage: function generateImage() {
-        return _react2["default"].createElement(
-            "a",
-            { href: this.vastObj.data.companionBigbox.clickthrough, target: "_blank" },
-            _react2["default"].createElement("img", { src: this.vastObj.data.companionBigbox.staticResource, width: "300", height: "250" })
+        return _react2['default'].createElement(
+            'a',
+            { href: this.vastObj.data.companionBigbox.clickthrough, target: '_blank' },
+            _react2['default'].createElement('img', { src: this.vastObj.data.companionBigbox.staticResource, width: '300', height: '250' })
         );
+    },
+
+    bigboxStyles: {
+        width: '300px',
+        height: '250px',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        zIndex: '100000',
+        display: 'none'
     },
 
     generateFlash: function generateFlash() {
@@ -34147,10 +34161,10 @@ exports["default"] = _react2["default"].createClass({
         var flashFile = this.vastObj.data.companionBigbox.staticResource;
         var flashClickThrough = encodeURIComponent(this.vastObj.data.companionBigbox.clickthrough);
 
-        return _react2["default"].createElement(
-            "object",
-            { classID: "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000", id: "vastCompanionAd", width: "300", height: "250" },
-            _react2["default"].createElement("embed", { src: flashFile, quality: "high", pluginspage: "http://www.macromedia.com/go/getfashplayer", type: "application/x-shockwave-flash", width: "300", height: "250" })
+        return _react2['default'].createElement(
+            'object',
+            { classID: 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000', id: 'vastCompanionAd', width: '300', height: '250' },
+            _react2['default'].createElement('embed', { src: flashFile, quality: 'high', type: 'application/x-shockwave-flash', width: '300', height: '250' })
         );
     },
 
@@ -34164,14 +34178,6 @@ exports["default"] = _react2["default"].createClass({
         }
     },
 
-    generateHTML: function generateHTML() {
-        return _react2["default"].createElement(
-            "h1",
-            null,
-            "HTML"
-        );
-    },
-
     getBigbox: function getBigbox() {
         if (typeof this.vastObj == "undefined") {
             return;
@@ -34180,24 +34186,59 @@ exports["default"] = _react2["default"].createClass({
                 var staticBigbox = this.generateStatic();
                 return staticBigbox;
             } else if (this.vastObj.data.companionBigbox.resourceType === "html") {
-                var htmlBigbox = this.generateHTML();
-                return htmlBigbox;
+                return _react2['default'].createElement(_HTMLResourceJsx2['default'], { html: this.vastObj.data.companionBigbox.htmlResource });
             }
         }
+    },
+
+    render: function render() {
+        return _react2['default'].createElement(
+            'div',
+            { id: 'companion-bigbox', style: this.bigboxStyles },
+            this.getBigbox()
+        );
+    }
+
+});
+module.exports = exports['default'];
+
+},{"./HTMLResource.jsx":310,"react":224}],310:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+exports["default"] = _react2["default"].createClass({
+    displayName: "HTMLResource",
+
+    componentDidMount: function componentDidMount() {
+        var htmlResource = this.props.html;
+        var iframeRef = _react2["default"].findDOMNode(this.refs.htmlCompanion);
+        var iframeDoc = iframeRef.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(htmlResource);
+        iframeDoc.close();
     },
 
     render: function render() {
         return _react2["default"].createElement(
             "div",
             null,
-            this.getBigbox()
+            _react2["default"].createElement("iframe", { width: "300", height: "250", scrolling: "no", frameBorder: "no", marginWidth: "0", marginHeight: "0", ref: "htmlCompanion" })
         );
     }
 
 });
 module.exports = exports["default"];
 
-},{"react":224}],310:[function(require,module,exports){
+},{"react":224}],311:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -34246,6 +34287,13 @@ exports['default'] = _react2['default'].createClass({
         };
     },
 
+    containerStyles: {
+        width: '302px',
+        height: '252px',
+        border: '1px solid #000',
+        position: 'relative'
+    },
+
     onVastReceived: function onVastReceived() {
         console.log("Vast Received");
         _storesVastStoreJsx2['default'].removeLoadListener(this.onVastReceived);
@@ -34270,34 +34318,17 @@ exports['default'] = _react2['default'].createClass({
 
         return _react2['default'].createElement(
             'div',
-            { className: 'grid grid_gutters grid-med_full' },
+            null,
+            _react2['default'].createElement(
+                'h6',
+                null,
+                'React Vast Video Player'
+            ),
             _react2['default'].createElement(
                 'div',
-                { className: 'grid-cell module_grid' },
-                _react2['default'].createElement(
-                    'div',
-                    { className: 'card' },
-                    _react2['default'].createElement(
-                        'span',
-                        { className: 'card-title' },
-                        'React Vast Video Player'
-                    ),
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'card-feature' },
-                        _react2['default'].createElement(_VideoPlayerJsx2['default'], { data: this.state.vast }),
-                        _react2['default'].createElement(_BigboxJsx2['default'], { data: this.state.vast })
-                    ),
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'card-meta' },
-                        _react2['default'].createElement(
-                            'div',
-                            { className: 'card-tag' },
-                            'Advertisement'
-                        )
-                    )
-                )
+                { style: this.containerStyles },
+                _react2['default'].createElement(_VideoPlayerJsx2['default'], { data: this.state.vast }),
+                _react2['default'].createElement(_BigboxJsx2['default'], { data: this.state.vast })
             )
         );
     }
@@ -34305,7 +34336,7 @@ exports['default'] = _react2['default'].createClass({
 });
 module.exports = exports['default'];
 
-},{"../../../actions/VastActions.jsx":306,"../../../stores/VastStore.jsx":318,"../../../utils/WebApi.jsx":319,"../../../utils/vast/VastPlayer.jsx":320,"./Bigbox.jsx":309,"./VideoPlayer.jsx":311,"react":224}],311:[function(require,module,exports){
+},{"../../../actions/VastActions.jsx":306,"../../../stores/VastStore.jsx":319,"../../../utils/WebApi.jsx":320,"../../../utils/vast/VastPlayer.jsx":321,"./Bigbox.jsx":309,"./VideoPlayer.jsx":312,"react":224}],312:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -34321,21 +34352,33 @@ var _react2 = _interopRequireDefault(_react);
 exports['default'] = _react2['default'].createClass({
     displayName: 'VideoPlayer',
 
+    componentDidMount: function componentDidMount() {
+        this.videoPlayer = _react2['default'].findDOMNode(this.refs.player);
+        this.videoPlayer.addEventListener('ended', this.videoEnd);
+    },
+
+    videoEnd: function videoEnd() {
+        this.videoPlayer.style.display = "none";
+        document.getElementById("companion-bigbox").style.display = "block";
+    },
+
     videoStyles: {
-        width: '60%',
-        height: 'auto',
-        float: 'left',
-        marginRight: '7%'
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        zIndex: '1000000'
     },
 
     render: function render() {
-        return _react2['default'].createElement('video', { style: this.videoStyles, className: 'card-video', src: this.props.data.videoURL, autoPlay: 'true', controls: true });
+        return _react2['default'].createElement('video', { ref: 'player', style: this.videoStyles, src: this.props.data.videoURL, autoPlay: 'true', controls: true });
     }
 
 });
 module.exports = exports['default'];
 
-},{"react":224}],312:[function(require,module,exports){
+},{"react":224}],313:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34371,7 +34414,7 @@ exports["default"] = _react2["default"].createClass({
 });
 module.exports = exports["default"];
 
-},{"react":224}],313:[function(require,module,exports){
+},{"react":224}],314:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34407,7 +34450,7 @@ exports["default"] = _react2["default"].createClass({
 });
 module.exports = exports["default"];
 
-},{"react":224}],314:[function(require,module,exports){
+},{"react":224}],315:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -34437,7 +34480,7 @@ exports['default'] = _react2['default'].createClass({
 });
 module.exports = exports['default'];
 
-},{"react":224}],315:[function(require,module,exports){
+},{"react":224}],316:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -34484,7 +34527,7 @@ exports['default'] = _react2['default'].createClass({
 });
 module.exports = exports['default'];
 
-},{"react":224,"react-router":56}],316:[function(require,module,exports){
+},{"react":224,"react-router":56}],317:[function(require,module,exports){
 //Please keep this list in alphabetical order
 "use strict";
 
@@ -34495,14 +34538,14 @@ var constants = {
 
 module.exports = constants;
 
-},{}],317:[function(require,module,exports){
+},{}],318:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":28}],318:[function(require,module,exports){
+},{"flux":28}],319:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -34569,7 +34612,7 @@ _dispatcherAppDispatcherJsx2['default'].register(function (action) {
 
 module.exports = VastStore;
 
-},{"../actions/VastActions.jsx":306,"../constants/AppConstants.jsx":316,"../dispatcher/AppDispatcher.jsx":317,"events":7,"object-assign":31}],319:[function(require,module,exports){
+},{"../actions/VastActions.jsx":306,"../constants/AppConstants.jsx":317,"../dispatcher/AppDispatcher.jsx":318,"events":7,"object-assign":31}],320:[function(require,module,exports){
 'use strict';
 
 var request = require('browser-request');
@@ -34592,7 +34635,7 @@ module.exports = {
 
 };
 
-},{"browser-request":1}],320:[function(require,module,exports){
+},{"browser-request":1}],321:[function(require,module,exports){
 "use strict";
 
 module.exports = {
