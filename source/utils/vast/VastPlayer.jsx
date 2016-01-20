@@ -1,6 +1,9 @@
 module.exports = {
     
     getMediaFiles : function(vast) {
+        if(typeof vast.VAST.Ad[0].InLine === "undefined") {
+            return false;
+        }
         var MediaFiles = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].MediaFiles[0].MediaFile;
         var mp4Files = [];
         MediaFiles.map(function(media) {
@@ -13,6 +16,9 @@ module.exports = {
     },
 
     getCompanionAd : function(vast) {
+        if(typeof vast.VAST.Ad[0].InLine === "undefined") {
+            return false;
+        }
         var companionAd = {};
         //check if companion ad exists
         if(vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[1]) {

@@ -34300,13 +34300,16 @@ exports['default'] = _react2['default'].createClass({
         var vastObj = _storesVastStoreJsx2['default'].getVastObject();
         this.videoFiles = _utilsVastVastPlayerJsx2['default'].getMediaFiles(vastObj);
         this.companionAd = _utilsVastVastPlayerJsx2['default'].getCompanionAd(vastObj);
-        console.log(this.companionAd);
-        this.setState({
-            vast: {
-                videoURL: this.videoFiles[0],
-                companionBigbox: this.companionAd
-            }
-        });
+        console.log("VIDEOFILES: " + this.videoFiles + " COMPANIONAD: " + this.companionAd);
+
+        if (this.videoFiles) {
+            this.setState({
+                vast: {
+                    videoURL: this.videoFiles[0],
+                    companionBigbox: this.companionAd
+                }
+            });
+        }
     },
 
     componentDidMount: function componentDidMount() {
@@ -34641,6 +34644,9 @@ module.exports = {
 module.exports = {
 
     getMediaFiles: function getMediaFiles(vast) {
+        if (typeof vast.VAST.Ad[0].InLine === "undefined") {
+            return false;
+        }
         var MediaFiles = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].MediaFiles[0].MediaFile;
         var mp4Files = [];
         MediaFiles.map(function (media) {
@@ -34653,6 +34659,9 @@ module.exports = {
     },
 
     getCompanionAd: function getCompanionAd(vast) {
+        if (typeof vast.VAST.Ad[0].InLine === "undefined") {
+            return false;
+        }
         var companionAd = {};
         //check if companion ad exists
         if (vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[1]) {
