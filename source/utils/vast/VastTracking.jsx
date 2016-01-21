@@ -10,6 +10,7 @@ module.exports = {
         this.vastTracking['threeQuarters'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[3]._;
         this.vastTracking['complete'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[4]._;
         this.vastTracking['clickthrough'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].VideoClicks[0].ClickThrough[0]._;
+        this.vastTracking['inView'] = vast.VAST.Ad[0].InLine[0].Extensions[0].Extension[0].CustomTracking[0].Tracking[0]._;
 
         this.impressionLoaded = false;
         this.startLoaded = false;
@@ -17,6 +18,26 @@ module.exports = {
         this.midLoaded = false
         this.threeQuarterLoaded = false;
         this.completeLoaded = false;
+    },
+
+    checkViewability: function() {
+        var rect = this.player.getBoundingClientRect();
+        return (rect.top >= 0 && rect.left >0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth);
+        
+    },
+
+    viewHandler: function() {
+        var handler = this.checkViewability();
+        if(handler) {
+            this.player.play();
+            clearInterval(this.viewTimer);
+            this.loadTrackingPixel("inView");
+        }
+    },
+
+    setViewability: function(player) {
+        this.player = player;
+        this.viewTimer = setInterval(this.viewHandler.bind(this), 1000);
     },
 
     loadTrackingPixel: function(type) {

@@ -8,6 +8,12 @@ import Nav from './global/Nav.jsx';
 
 export default React.createClass({
 
+    viewCheckStyles : {
+        width: "300px",
+        height: "1500px",
+        backgroundColor: "#CCC"
+    },
+
     render() {
         return (
             <div>
@@ -18,6 +24,9 @@ export default React.createClass({
                                 <section className="grid-wrapper">
                                     <Header />
                                     <Nav />
+                                    <div style={this.viewCheckStyles}>
+                                        <h6>DIV TO CHECK VIEWABILITY FUNCTIONALITY</h6>
+                                    </div>
                                     <RouteHandler />
                                 </section>
                             </div>

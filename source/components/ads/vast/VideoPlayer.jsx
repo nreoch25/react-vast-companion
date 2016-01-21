@@ -6,6 +6,7 @@ export default React.createClass({
     componentWillReceiveProps(vastProps) {
         this.videoPlayer = React.findDOMNode(this.refs.player);
         VastTracking.setEventListeners(this.videoPlayer);
+        VastTracking.setViewability(this.videoPlayer);
     },
 
     videoStyles : {
@@ -20,7 +21,7 @@ export default React.createClass({
 
     render() {
         return (
-            <video ref="player" style={this.videoStyles} src={this.props.data.videoURL} autoPlay="true" controls></video>
+            <video ref="player" style={this.videoStyles} src={this.props.data.videoURL} controls></video>
         );
     }
 

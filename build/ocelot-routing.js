@@ -34080,6 +34080,12 @@ var _globalNavJsx2 = _interopRequireDefault(_globalNavJsx);
 exports['default'] = _react2['default'].createClass({
     displayName: 'AppContainer',
 
+    viewCheckStyles: {
+        width: "300px",
+        height: "1500px",
+        backgroundColor: "#CCC"
+    },
+
     render: function render() {
         return _react2['default'].createElement(
             'div',
@@ -34101,6 +34107,15 @@ exports['default'] = _react2['default'].createClass({
                                 { className: 'grid-wrapper' },
                                 _react2['default'].createElement(_globalHeaderJsx2['default'], null),
                                 _react2['default'].createElement(_globalNavJsx2['default'], null),
+                                _react2['default'].createElement(
+                                    'div',
+                                    { style: this.viewCheckStyles },
+                                    _react2['default'].createElement(
+                                        'h6',
+                                        null,
+                                        'DIV TO CHECK VIEWABILITY FUNCTIONALITY'
+                                    )
+                                ),
                                 _react2['default'].createElement(_reactRouter.RouteHandler, null)
                             )
                         )
@@ -34381,6 +34396,7 @@ exports['default'] = _react2['default'].createClass({
     componentWillReceiveProps: function componentWillReceiveProps(vastProps) {
         this.videoPlayer = _react2['default'].findDOMNode(this.refs.player);
         _utilsVastVastTrackingJsx2['default'].setEventListeners(this.videoPlayer);
+        _utilsVastVastTrackingJsx2['default'].setViewability(this.videoPlayer);
     },
 
     videoStyles: {
@@ -34394,7 +34410,7 @@ exports['default'] = _react2['default'].createClass({
     },
 
     render: function render() {
-        return _react2['default'].createElement('video', { ref: 'player', style: this.videoStyles, src: this.props.data.videoURL, autoPlay: 'true', controls: true });
+        return _react2['default'].createElement('video', { ref: 'player', style: this.videoStyles, src: this.props.data.videoURL, controls: true });
     }
 
 });
@@ -34718,6 +34734,7 @@ module.exports = {
         this.vastTracking['threeQuarters'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[3]._;
         this.vastTracking['complete'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[4]._;
         this.vastTracking['clickthrough'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].VideoClicks[0].ClickThrough[0]._;
+        this.vastTracking['inView'] = vast.VAST.Ad[0].InLine[0].Extensions[0].Extension[0].CustomTracking[0].Tracking[0]._;
 
         this.impressionLoaded = false;
         this.startLoaded = false;
@@ -34725,6 +34742,25 @@ module.exports = {
         this.midLoaded = false;
         this.threeQuarterLoaded = false;
         this.completeLoaded = false;
+    },
+
+    checkViewability: function checkViewability() {
+        var rect = this.player.getBoundingClientRect();
+        return rect.top >= 0 && rect.left > 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
+    },
+
+    viewHandler: function viewHandler() {
+        var handler = this.checkViewability();
+        if (handler) {
+            this.player.play();
+            clearInterval(this.viewTimer);
+            this.loadTrackingPixel("inView");
+        }
+    },
+
+    setViewability: function setViewability(player) {
+        this.player = player;
+        this.viewTimer = setInterval(this.viewHandler.bind(this), 1000);
     },
 
     loadTrackingPixel: function loadTrackingPixel(type) {
