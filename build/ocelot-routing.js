@@ -34278,6 +34278,10 @@ var _utilsVastVastPlayerJsx = require('../../../utils/vast/VastPlayer.jsx');
 
 var _utilsVastVastPlayerJsx2 = _interopRequireDefault(_utilsVastVastPlayerJsx);
 
+var _utilsVastVastTrackingJsx = require('../../../utils/vast/VastTracking.jsx');
+
+var _utilsVastVastTrackingJsx2 = _interopRequireDefault(_utilsVastVastTrackingJsx);
+
 var _VideoPlayerJsx = require('./VideoPlayer.jsx');
 
 var _VideoPlayerJsx2 = _interopRequireDefault(_VideoPlayerJsx);
@@ -34309,9 +34313,13 @@ exports['default'] = _react2['default'].createClass({
         console.log("Vast Received");
         _storesVastStoreJsx2['default'].removeLoadListener(this.onVastReceived);
         var vastObj = _storesVastStoreJsx2['default'].getVastObject();
+        if (typeof vastObj.VAST.Ad[0].InLine === "undefined") {
+            console.log("NO VAST AD TO DISPLAY OR TRACK");
+            return;
+        }
         this.videoFiles = _utilsVastVastPlayerJsx2['default'].getMediaFiles(vastObj);
         this.companionAd = _utilsVastVastPlayerJsx2['default'].getCompanionAd(vastObj);
-        console.log("VIDEOFILES: " + this.videoFiles + " COMPANIONAD: " + this.companionAd);
+        _utilsVastVastTrackingJsx2['default'].initTracking(vastObj);
 
         if (this.videoFiles) {
             this.setState({
@@ -34350,7 +34358,7 @@ exports['default'] = _react2['default'].createClass({
 });
 module.exports = exports['default'];
 
-},{"../../../actions/VastActions.jsx":306,"../../../stores/VastStore.jsx":319,"../../../utils/WebApi.jsx":320,"../../../utils/vast/VastPlayer.jsx":321,"./Bigbox.jsx":309,"./VideoPlayer.jsx":312,"react":224}],312:[function(require,module,exports){
+},{"../../../actions/VastActions.jsx":306,"../../../stores/VastStore.jsx":319,"../../../utils/WebApi.jsx":320,"../../../utils/vast/VastPlayer.jsx":321,"../../../utils/vast/VastTracking.jsx":322,"./Bigbox.jsx":309,"./VideoPlayer.jsx":312,"react":224}],312:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -34363,17 +34371,16 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _utilsVastVastTrackingJsx = require('../../../utils/vast/VastTracking.jsx');
+
+var _utilsVastVastTrackingJsx2 = _interopRequireDefault(_utilsVastVastTrackingJsx);
+
 exports['default'] = _react2['default'].createClass({
     displayName: 'VideoPlayer',
 
-    componentDidMount: function componentDidMount() {
+    componentWillReceiveProps: function componentWillReceiveProps(vastProps) {
         this.videoPlayer = _react2['default'].findDOMNode(this.refs.player);
-        this.videoPlayer.addEventListener('ended', this.videoEnd);
-    },
-
-    videoEnd: function videoEnd() {
-        this.videoPlayer.style.display = "none";
-        document.getElementById("companion-bigbox").style.display = "block";
+        _utilsVastVastTrackingJsx2['default'].setEventListeners(this.videoPlayer);
     },
 
     videoStyles: {
@@ -34392,7 +34399,7 @@ exports['default'] = _react2['default'].createClass({
 });
 module.exports = exports['default'];
 
-},{"react":224}],313:[function(require,module,exports){
+},{"../../../utils/vast/VastTracking.jsx":322,"react":224}],313:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34655,9 +34662,6 @@ module.exports = {
 module.exports = {
 
     getMediaFiles: function getMediaFiles(vast) {
-        if (typeof vast.VAST.Ad[0].InLine === "undefined") {
-            return false;
-        }
         var MediaFiles = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].MediaFiles[0].MediaFile;
         var mp4Files = [];
         MediaFiles.map(function (media) {
@@ -34670,9 +34674,6 @@ module.exports = {
     },
 
     getCompanionAd: function getCompanionAd(vast) {
-        if (typeof vast.VAST.Ad[0].InLine === "undefined") {
-            return false;
-        }
         var companionAd = {};
         //check if companion ad exists
         if (vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[1]) {
@@ -34697,6 +34698,31 @@ module.exports = {
         }
 
         return companionAd;
+    }
+
+};
+
+},{}],322:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+
+    initTracking: function initTracking(vast) {
+
+        this.vastTracking = {};
+        this.vastTracking.videoImpression = vast.VAST.Ad[0].InLine[0].Impression[0];
+        console.log("VIDEOIMPRESSION", this.vastTracking.videoImpression);
+        this.vastTracking.videoStart = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[0]._;
+        console.log("VIDEOSTART", this.vastTracking.videoStart);
+    },
+
+    setEventListeners: function setEventListeners(player) {
+        player.addEventListener("ended", function (event) {
+            //Hide Video Player on Video Ended
+            this.style.display = "none";
+            //Display Companion on Video Ended
+            document.getElementById("companion-bigbox").style.display = "block";
+        });
     }
 
 };

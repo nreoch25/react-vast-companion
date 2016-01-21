@@ -4,6 +4,7 @@ import VastActions from '../../../actions/VastActions.jsx';
 import WebApi from '../../../utils/WebApi.jsx';
 
 import VastPlayer from '../../../utils/vast/VastPlayer.jsx';
+import VastTracking from '../../../utils/vast/VastTracking.jsx';
 
 import VideoPlayer from './VideoPlayer.jsx';
 import Bigbox from './Bigbox.jsx';
@@ -30,9 +31,13 @@ export default React.createClass({
         console.log("Vast Received");
         VastStore.removeLoadListener(this.onVastReceived);
         var vastObj = VastStore.getVastObject();
+        if(typeof vastObj.VAST.Ad[0].InLine === "undefined") {
+            console.log("NO VAST AD TO DISPLAY OR TRACK");
+            return;
+        }
         this.videoFiles = VastPlayer.getMediaFiles(vastObj);
         this.companionAd = VastPlayer.getCompanionAd(vastObj);
-        console.log("VIDEOFILES: " + this.videoFiles + " COMPANIONAD: " + this.companionAd);
+        VastTracking.initTracking(vastObj);
         
         if(this.videoFiles) {
             this.setState({

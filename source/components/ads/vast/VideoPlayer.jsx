@@ -1,16 +1,12 @@
 import React, {PropTypes} from 'react';
+import VastTracking from '../../../utils/vast/VastTracking.jsx';
 
 export default React.createClass({
 
-    componentDidMount() {
+    componentWillReceiveProps(vastProps) {
         this.videoPlayer = React.findDOMNode(this.refs.player);
-        this.videoPlayer.addEventListener('ended', this.videoEnd);
+        VastTracking.setEventListeners(this.videoPlayer);
     },
-
-    videoEnd() {
-        this.videoPlayer.style.display = "none";
-        document.getElementById("companion-bigbox").style.display = "block";
-    },  
 
     videoStyles : {
         width: '100%',
