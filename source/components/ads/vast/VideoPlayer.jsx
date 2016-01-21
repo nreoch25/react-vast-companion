@@ -14,7 +14,8 @@ export default React.createClass({
         position: 'absolute',
         top: '0',
         left: '0',
-        zIndex: '1000000'
+        zIndex: '1000000',
+        cursor: 'pointer'
     },
 
     render() {

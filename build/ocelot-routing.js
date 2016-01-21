@@ -34389,7 +34389,8 @@ exports['default'] = _react2['default'].createClass({
         position: 'absolute',
         top: '0',
         left: '0',
-        zIndex: '1000000'
+        zIndex: '1000000',
+        cursor: 'pointer'
     },
 
     render: function render() {
@@ -34703,26 +34704,76 @@ module.exports = {
 };
 
 },{}],322:[function(require,module,exports){
-"use strict";
+'use strict';
 
 module.exports = {
 
     initTracking: function initTracking(vast) {
 
         this.vastTracking = {};
-        this.vastTracking.videoImpression = vast.VAST.Ad[0].InLine[0].Impression[0];
-        console.log("VIDEOIMPRESSION", this.vastTracking.videoImpression);
-        this.vastTracking.videoStart = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[0]._;
-        console.log("VIDEOSTART", this.vastTracking.videoStart);
+        this.vastTracking['impression'] = vast.VAST.Ad[0].InLine[0].Impression[0];
+        this.vastTracking['start'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[0]._;
+        this.vastTracking['quarter'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[1]._;
+        this.vastTracking['mid'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[2]._;
+        this.vastTracking['threeQuarters'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[3]._;
+        this.vastTracking['complete'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].TrackingEvents[0].Tracking[4]._;
+        this.vastTracking['clickthrough'] = vast.VAST.Ad[0].InLine[0].Creatives[0].Creative[0].Linear[0].VideoClicks[0].ClickThrough[0]._;
+
+        this.impressionLoaded = false;
+        this.startLoaded = false;
+        this.quarterLoaded = false;
+        this.midLoaded = false;
+        this.threeQuarterLoaded = false;
+        this.completeLoaded = false;
+    },
+
+    loadTrackingPixel: function loadTrackingPixel(type) {
+        console.log("LOADING TRACKING PIXEL: " + type);
+        var impressionImage = document.createElement("img");
+        impressionImage.src = this.vastTracking[type];
+    },
+
+    checkTime: function checkTime(currentTime, player) {
+        var videoPercentage = currentTime / player.duration * 100;
+        if (videoPercentage >= 25 && this.quarterLoaded === false) {
+            this.loadTrackingPixel('quarter');
+            this.quarterLoaded = true;
+        }
+        if (videoPercentage >= 50 && this.midLoaded === false) {
+            this.loadTrackingPixel('mid');
+            this.midLoaded = true;
+        }
+        if (videoPercentage >= 75 && this.threeQuarterLoaded === false) {
+            this.loadTrackingPixel('threeQuarters');
+            this.threeQuarterLoaded = true;
+        }
     },
 
     setEventListeners: function setEventListeners(player) {
-        player.addEventListener("ended", function (event) {
+        player.addEventListener("play", (function (event) {
+            if (!this.impressionLoaded) {
+                this.loadTrackingPixel("impression");this.impressionLoaded = true;
+            }
+            if (!this.startLoaded) {
+                this.loadTrackingPixel("start");this.startLoaded = true;
+            }
+        }).bind(this));
+        player.addEventListener("timeupdate", (function (event) {
+            this.checkTime(player.currentTime, player);
+        }).bind(this));
+        player.addEventListener("ended", (function (event) {
+            if (!this.completeLoaded) {
+                this.loadTrackingPixel("complete");this.completeLoaded = true;
+            }
             //Hide Video Player on Video Ended
-            this.style.display = "none";
+            player.style.display = "none";
             //Display Companion on Video Ended
             document.getElementById("companion-bigbox").style.display = "block";
-        });
+        }).bind(this));
+        player.addEventListener("click", (function (event) {
+            window.open(this.vastTracking['clickthrough'], "_blank");
+            player.pause();
+        }).bind(this));
     }
 
 };
